@@ -16,7 +16,7 @@
 | 边界测试 | 9 项：超时创建、取消后截止、付款到期不释放、创建时间不可变、状态冲突、已付款不重开、并发观察记录、取消阻止创建、过期登录；[edge-results.json](../reports/edge-results.json) |
 | 网页浏览器 | 桌面 1440×1000 与手机 390×844 Chromium：筛选、演示详情、复制 Prompt、无横向溢出、一次性登录、订单留言；4 项通过。手机为浏览器模拟尺寸，非真机网络/性能测试 |
 | 安装与更新 | macOS arm64 隔离目录安装、CLI 健康检查、升级保留凭证、Codex/Claude 技能目录注册、卸载保留身份通过 |
-| 依赖准备 | 强制走缺少 Node 的引导分支，从 nodejs.org 下载并校验自有 Node，CLI 正常运行；不声称完整空白操作系统镜像验证 |
+| 依赖准备 | 强制走缺少 Node 的引导分支，从 nodejs.org 下载并校验自有 Node，CLI 正常运行；[安装证据](../reports/installation-verification.md)，不声称完整空白操作系统镜像验证 |
 | 包完整性 | 错误 SHA-256 的篡改包在安装前被拒绝 |
 | MCP 连接 | 当前开发 Codex 已连接的只读 list-nutrition-foods 成功返回 160 条记录；[mcp-probe.json](../reports/mcp-probe.json) |
 | 生产基础 | HTTPS、D1、三演示/零真实成果、分享标记、安装入口、发布包校验与未登录后台拒绝；[production-results.json](../reports/production-results.json) |

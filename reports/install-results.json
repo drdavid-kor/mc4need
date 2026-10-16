@@ -1,12 +1,11 @@
 {
-  "date": "2026-10-16T14:45:00.808Z",
+  "date": "2026-10-16T14:55:11.457Z",
   "system": "darwin",
   "checks": [
     "macOS clean isolated Codex install, CLI health and upgrade preserve identity with mode 0600",
     "Claude skill directory registration (not actual Claude runtime discovery)",
-    "Uninstall removes installed program and managed skills, preserves identity",
-    "Managed Node bootstrap downloaded from nodejs.org and official SHA-256 verified; installed CLI runs"
+    "Uninstall removes installed program and managed skills, preserves identity"
   ],
-  "passed": 4,
+  "passed": 3,
   "limitation": "Client auto-discovery and Windows/Linux actual devices not tested"
 }
