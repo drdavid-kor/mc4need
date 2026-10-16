@@ -78,3 +78,54 @@ test("one-use web login accesses only own order messages", async ({
   await page.getByRole("button", { name: "发送留言" }).click();
   await expect(page.getByText(note, { exact: true })).toBeVisible();
 });
+
+test("signed-in browser downloads a private CLI identity file", async ({
+  page,
+  request,
+}, info) => {
+  test.skip(!!process.env.UI_BASE, "Private test runs only locally");
+  const fixture = JSON.parse(
+    fs.readFileSync("reports/private/local-fixture.json", "utf8"),
+  );
+  const response = await request.post("/api/auth/link", {
+    headers: { Authorization: `Bearer ${fixture.ownerToken}` },
+    data: {},
+  });
+  await page.goto((await response.json()).url);
+  await expect(
+    page.getByRole("button", { name: "下载私密凭证文件" }),
+  ).toBeVisible();
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "下载私密凭证文件" }).click();
+  const download = await downloadPromise;
+  const dest = info.outputPath("identity.json");
+  await download.saveAs(dest);
+  const credential = JSON.parse(fs.readFileSync(dest, "utf8"));
+  expect(credential.userId).toBe(fixture.ownerId);
+  expect(credential.token).toMatch(/^[a-f0-9]{64}$/);
+  expect(await page.locator("body").innerText()).not.toContain(
+    credential.token,
+  );
+  fs.unlinkSync(dest);
+});
+
+test("receipt has priority over a stale client status while preserving its source", async ({
+  page,
+}) => {
+  test.skip(!!process.env.UI_BASE, "Synthetic lifecycle fixture is local only");
+  const fixture = JSON.parse(
+    fs.readFileSync("reports/private/workflow-fixture.json", "utf8"),
+  );
+  await page.goto(`/needs/${fixture.needId}`);
+  await expect(page.locator(".support-panel .status-block")).toHaveText(
+    "已完成 · 发起方已确认收餐与反馈",
+  );
+  await expect(
+    page.locator(".support-panel").getByText(/赞助人客户端同步：等待付款/),
+  ).toBeVisible();
+  await expect(page.getByText("Later discrepancy reported")).toBeVisible();
+  await expect(
+    page.locator('iframe[title="公开收货地点地图"]'),
+  ).toHaveAttribute("src", /marker=31%2C121/);
+  expect(await page.locator("body").innerText()).not.toContain("LOCAL-PRIVATE");
+});

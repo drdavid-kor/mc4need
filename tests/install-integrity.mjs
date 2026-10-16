@@ -6,7 +6,7 @@ import os from "node:os";
 import assert from "node:assert/strict";
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mc4need-integrity-"));
 const server = createServer((req, res) => {
-  if (req.url.endsWith("SHA256SUMS"))
+  if (req.url.includes("SHA256SUMS"))
     res.end(fs.readFileSync("public/releases/SHA256SUMS"));
   else res.end("tampered package");
 });

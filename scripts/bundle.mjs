@@ -18,7 +18,10 @@ for (const name of ["register.mjs", "uninstall.mjs"])
 fs.copyFileSync("public/install-guide.md", path.join(folder, "INSTALL.md"));
 for (const name of ["LICENSE"])
   if (fs.existsSync(name)) fs.copyFileSync(name, path.join(folder, name));
-fs.writeFileSync(path.join(folder,'README.md'),'# Mc4Need CLI + Skill\n\nSponsor a meal. Be part of it.\n\nSee INSTALL.md for installation and identity backup. Read skill/SKILL.md and skill/references/workflows.md before operating.\n\nSource and verified limitations: https://github.com/drdavid-kor/mc4need\n');
+fs.writeFileSync(
+  path.join(folder, "README.md"),
+  "# Mc4Need CLI + Skill\n\nSponsor a meal. Be part of it.\n\nSee INSTALL.md for installation and identity backup. Read skill/SKILL.md and skill/references/workflows.md before operating.\n\nSource and verified limitations: https://github.com/drdavid-kor/mc4need\n",
+);
 fs.mkdirSync("public/releases", { recursive: true });
 const names = [`mc4need-${version}.tar.gz`, `mc4need-${version}.zip`];
 execFileSync(
@@ -43,10 +46,29 @@ fs.writeFileSync(
   "public/releases/manifest.json",
   JSON.stringify({ version, files }, null, 2) + "\n",
 );
-fs.writeFileSync(
-  "public/releases/SHA256SUMS",
+const currentSums =
   Object.entries(files)
     .map(([n, v]) => `${v.sha256}  ${n}`)
+    .join("\n") + "\n";
+fs.writeFileSync(`public/releases/SHA256SUMS-${version}`, currentSums);
+fs.writeFileSync(
+  `public/releases/manifest-${version}.json`,
+  JSON.stringify({ version, files }, null, 2) + "\n",
+);
+const allPackages = fs
+  .readdirSync("public/releases")
+  .filter((n) => /^mc4need-[\d.]+\.(tar\.gz|zip)$/.test(n))
+  .sort();
+fs.writeFileSync(
+  "public/releases/SHA256SUMS",
+  allPackages
+    .map(
+      (n) =>
+        `${crypto
+          .createHash("sha256")
+          .update(fs.readFileSync(path.join("public/releases", n)))
+          .digest("hex")}  ${n}`,
+    )
     .join("\n") + "\n",
 );
 fs.mkdirSync("public/skill/references", { recursive: true });

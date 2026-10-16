@@ -2,7 +2,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-const VERSION = "0.1.0";
+const VERSION = "0.1.1";
 const dir = process.env.MC4NEED_HOME || path.join(os.homedir(), ".mc4need");
 const configFile = path.join(dir, "identity.json");
 const base = process.env.MC4NEED_API || "https://mc4need.david-widgets.com";
@@ -47,9 +47,69 @@ async function request(endpoint, method = "GET", body, auth = true) {
 }
 async function save(data) {
   await fs.mkdir(dir, { recursive: true, mode: 0o700 });
-  await fs.writeFile(configFile, JSON.stringify(data), { mode: 0o600 });
-  await fs.chmod(configFile, 0o600);
+  const temp = path.join(dir, `.identity-${crypto.randomUUID()}.tmp`);
+  try {
+    await fs.writeFile(temp, JSON.stringify(data), { mode: 0o600, flag: "wx" });
+    await fs.rename(temp, configFile);
+    await fs.chmod(configFile, 0o600);
+  } finally {
+    await fs.rm(temp, { force: true });
+  }
   config = data;
+}
+async function importIdentity(file) {
+  if (!file)
+    throw new Error(
+      "Provide the path to your private credential file. Never paste its contents into chat.",
+    );
+  const info = await fs.stat(file);
+  if (!info.isFile() || info.size > 8192)
+    throw new Error("Invalid credential file");
+  let candidate;
+  try {
+    candidate = JSON.parse(await fs.readFile(file, "utf8"));
+  } catch {
+    throw new Error("Invalid credential file");
+  }
+  if (
+    !candidate ||
+    candidate.origin !== u.origin ||
+    typeof candidate.token !== "string" ||
+    !/^[a-f0-9]{64}$/.test(candidate.token) ||
+    typeof candidate.userId !== "string"
+  )
+    throw new Error(
+      "Credential does not belong to this platform origin or has an invalid format",
+    );
+  const response = await fetch(base + "/api/auth/identity", {
+    headers: { Authorization: "Bearer " + candidate.token },
+    signal: AbortSignal.timeout(25000),
+  });
+  if (!response.ok)
+    throw new Error(
+      "Credential is expired, revoked or unavailable. No local identity was changed.",
+    );
+  const verified = await response.json();
+  if (verified.user?.id !== candidate.userId)
+    throw new Error(
+      "Credential identity does not match the file. No local identity was changed.",
+    );
+  if (config.token && config.userId !== candidate.userId)
+    throw new Error(
+      "Another platform identity is already saved. Use a separate MC4NEED_HOME to avoid losing it.",
+    );
+  await save({
+    token: candidate.token,
+    userId: candidate.userId,
+    origin: u.origin,
+    createdAt: candidate.createdAt ?? Date.now(),
+  });
+  return {
+    ok: true,
+    userId: candidate.userId,
+    message:
+      "Identity restored. Keep the credential file private or remove the temporary download after verifying access.",
+  };
 }
 async function login() {
   if (config.token) {
@@ -93,6 +153,7 @@ const help = {
       "me",
       "email (stdin: {email})",
       "recover (stdin: {email})",
+      "import-file <private credential path>",
       "logout",
       "revoke",
     ],
@@ -104,6 +165,7 @@ const help = {
       "update <id> (stdin)",
       "publish <id> (stdin: {version,confirmed:true})",
       "next <id> (stdin: {confirmed:true})",
+      "close <id> (stdin: {confirmed:true})",
       "claim <id> (stdin: {version,displayName,contact?})",
       "receipt <id> (stdin: {received,feedback?,publicConsent,issue?})",
     ],
@@ -146,7 +208,8 @@ try {
       mcp: "Requires AI client to inspect its connected MCP tools; this check does not access a McDonald’s account.",
     });
   } else if (group === "auth") {
-    if (action === "guest") out(await login());
+    if (action === "import-file") out(await importIdentity(arg));
+    else if (action === "guest") out(await login());
     else if (action === "browser") {
       await login();
       out(await request("/auth/link", "POST", {}));

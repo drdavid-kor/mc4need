@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-16T15:07:58.051Z",
+  "environment": "Local Worker and synthetic D1 only; no official orders",
+  "passed": 9,
+  "checks": [
+    "Expired pre-create lock releases and another sponsor can claim",
+    "Old need version cannot sponsor after requester update and re-publication",
+    "Creation before cutoff is accepted even if status report arrives after cutoff",
+    "Failed, unknown and successful cancellation outcomes preserve independent refund status",
+    "Requester receipt completes while preserving stale official-client status as separate evidence",
+    "Repeated completed feedback does not add duplicate completion notifications",
+    "Later discrepancy is visible without deleting the original completed feedback",
+    "Anonymous public thanks does not expose either counterpart contact",
+    "Scheduled recurrence creates one private unverified draft, never publishes or orders"
+  ]
+}

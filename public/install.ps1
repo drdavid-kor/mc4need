@@ -1,6 +1,6 @@
 param([ValidateSet('codex','claude')][string]$Client='codex')
 $ErrorActionPreference='Stop'
-$Version='0.1.0'
+$Version='0.1.1'
 $Base='https://mc4need.david-widgets.com'
 $Root=Join-Path $env:LOCALAPPDATA 'Mc4Need'
 $Temp=Join-Path ([IO.Path]::GetTempPath()) ('mc4need-'+[guid]::NewGuid())
@@ -23,7 +23,7 @@ try {
     $Node=Join-Path $Runtime 'node.exe'
   }
   Invoke-WebRequest "$Base/releases/mc4need-$Version.zip" -OutFile "$Temp\package.zip"
-  Invoke-WebRequest "$Base/releases/SHA256SUMS" -OutFile "$Temp\SHA256SUMS"
+  Invoke-WebRequest "$Base/releases/SHA256SUMS-$Version" -OutFile "$Temp\SHA256SUMS"
   $Expected=((Get-Content "$Temp\SHA256SUMS" | Where-Object { $_ -match "  mc4need-$([regex]::Escape($Version)).zip$" }) -split '\s+')[0]
   if (!$Expected -or (Get-FileHash "$Temp\package.zip" -Algorithm SHA256).Hash.ToLower() -ne $Expected) {throw 'Mc4Need checksum mismatch'}
   Expand-Archive "$Temp\package.zip" "$Temp\package"

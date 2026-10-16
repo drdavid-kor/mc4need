@@ -49,7 +49,7 @@ Invoke-WebRequest https://mc4need.david-widgets.com/install.ps1 -OutFile "$env:T
 
 ## 升级 / 备份 / 卸载
 
-重新运行安装脚本即可升级程序；身份文件与程序分离，不覆盖已有身份。可用 `mc4need identity export-file /absolute/private/backup.json` 备份，文件含私密平台凭证，请妥善保存。恢复时在关闭 CLI 后将该文件复制到 `~/.mc4need/identity.json` 并限制本机访问权限。
+重新运行安装脚本即可升级程序；身份文件与程序分离，不覆盖已有身份。可用 `mc4need identity export-file /absolute/private/backup.json` 备份，文件含私密平台凭证，请妥善保存。恢复时运行 `mc4need auth import-file /absolute/private/backup.json`；CLI 会先核实平台来源与实际身份，再以本机限制权限写入，不输出凭证内容。已保存另一个身份时会拒绝覆盖，可使用单独的 `MC4NEED_HOME` 目录。
 
 卸载程序：
 
@@ -58,3 +58,14 @@ node ~/.local/share/mc4need/current/scripts/uninstall.mjs
 ```
 
 没有系统 Node 时，使用 `~/.local/share/mc4need/runtime/bin/node`。Windows 用安装时的 Node 执行 `%LOCALAPPDATA%\Mc4Need\current\scripts\uninstall.mjs`。卸载默认保留身份；如需同时撤销服务端凭证，先 `mc4need auth revoke`。删除最后一份未绑定邮箱的凭证会失去访问权限。
+
+## 从网页登录恢复到 AI
+
+已登录网页（包括邮箱恢复后）可在“我的记录”点击“下载私密凭证文件”，再在自己的电脑运行：
+
+```sh
+mc4need auth import-file /absolute/path/mc4need-identity.json
+mc4need auth me
+```
+
+文件是一份有效 90 天的平台访问凭证，不含麦当劳 Token。只交给自己的本机 CLI，不在 AI 对话中粘贴文件内容。确认导入成功后妥善保存或删除临时下载件；`auth revoke` 会使包括下载凭证在内的全部平台会话失效。邮件尚未开放时，此入口仍可用于已有网页登录身份的跨设备接续，不能替代丢失所有凭证后的邮箱恢复。

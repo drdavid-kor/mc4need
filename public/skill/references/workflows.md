@@ -59,3 +59,7 @@ Map official order status based on actual current response/schema: known values 
 ## Installation and diagnostics
 
 `doctor` proves CLI/platform availability only. It does not prove skill auto-discovery, MCP authorization, restaurant availability, ordering, payment or delivery. Report these separately. `identity export-file /absolute/private/path` writes a private backup without printing its token. `auth revoke` revokes every platform session and login link; the local identity is then removed. Uninstall preserves identity unless user explicitly deletes it.
+
+## Restore the same platform identity in another client
+
+If a user has regained web access (for example after verified-email recovery when enabled), direct them to My space → 下载私密凭证文件. They then run `mc4need auth import-file /absolute/private/mc4need-identity.json` on their own computer. The CLI validates the fixed API origin, live session and actual user, then writes a restricted local file. Never ask them to paste the JSON or token into the conversation. Import refuses to overwrite a different existing identity; use a separate MC4NEED_HOME for a deliberate second profile. Downloading creates an independent 90-day session; global revoke invalidates it too.

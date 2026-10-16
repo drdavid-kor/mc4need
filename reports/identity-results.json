@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-16T15:04:39.839Z",
+  "environment": "Isolated local Worker and CLI; no real email delivery",
+  "passed": 6,
+  "checks": [
+    "Only an authenticated confirmed action creates a separate CLI session",
+    "New CLI device restores the same identity without printing its credential",
+    "Wrong-origin credential is rejected without changing local identity",
+    "Declared identity cannot override the server-authenticated user",
+    "Import does not silently overwrite a different saved identity",
+    "Revocation invalidates exported sessions and revoked imports preserve the existing local file"
+  ]
+}

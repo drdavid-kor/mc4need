@@ -1,6 +1,6 @@
 {
   "name": "mc4need",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Sponsor a meal. Be part of it.",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
@@ -15,7 +15,9 @@
     "bundle": "node scripts/bundle.mjs",
     "test:edges": "node tests/edges.mjs",
     "test:install": "node tests/install.mjs",
-    "test:integrity": "node tests/install-integrity.mjs"
+    "test:integrity": "node tests/install-integrity.mjs",
+    "test:identity": "node tests/identity.mjs",
+    "test:workflows": "node tests/workflows.mjs"
   },
   "keywords": [],
   "author": "",

@@ -2,7 +2,7 @@
 set -eu
 CLIENT="${1:-codex}"
 case "$CLIENT" in codex|claude) ;; *) printf '%s\n' 'Usage: install.sh codex|claude'; exit 1;; esac
-VERSION=0.1.0
+VERSION=0.1.1
 BASE="${MC4NEED_DOWNLOAD_BASE:-https://mc4need.david-widgets.com}"
 INSTALL_HOME="${MC4NEED_INSTALL_HOME:-$HOME}"
 ROOT="$INSTALL_HOME/.local/share/mc4need"
@@ -26,7 +26,7 @@ if [ "${MC4NEED_FORCE_RUNTIME:-0}" = 1 ] || [ -z "$NODE" ] || ! "$NODE" -e 'if(N
   NODE="$ROOT/runtime/bin/node"
 fi
 curl -fLsS "$BASE/releases/mc4need-$VERSION.tar.gz" -o "$TEMP/package.tar.gz"
-curl -fLsS "$BASE/releases/SHA256SUMS" -o "$TEMP/SHA256SUMS"
+curl -fLsS "$BASE/releases/SHA256SUMS-$VERSION" -o "$TEMP/SHA256SUMS"
 EXPECTED="$(awk -v f="mc4need-$VERSION.tar.gz" '$2==f {print $1}' "$TEMP/SHA256SUMS")"
 [ -n "$EXPECTED" ] && [ "$(sha256_file "$TEMP/package.tar.gz")" = "$EXPECTED" ] || { printf '%s\n' 'Mc4Need checksum mismatch'; exit 1; }
 tar -xzf "$TEMP/package.tar.gz" -C "$TEMP"

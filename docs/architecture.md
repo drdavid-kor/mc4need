@@ -4,7 +4,7 @@
 
 Cloudflare Worker 服务 API，静态资源由同一 Worker 的 Assets 提供，D1 保存关系数据。每次平台访客创建 256 位随机 bearer token，只存 SHA-256 哈希；客户端凭证单独存在本机限制权限的 `identity.json`。不接受用户任意提交的麦当劳 accountId 作为身份。
 
-CLI token 有效 90 天，网页会话 7 天；一次性链接 5 分钟，通过 URL fragment 传到网页，再 POST 兑换 HttpOnly、SameSite=Strict cookie。读取 fragment 后立即清除地址栏。过期/重放失败，跨源写操作拒绝。`auth revoke` 撤销该用户会话与待兑换链接。
+CLI token 有效 90 天，网页会话 7 天；一次性链接 5 分钟，通过 URL fragment 传到网页，再 POST 兑换 HttpOnly、SameSite=Strict cookie。读取 fragment 后立即清除地址栏。过期/重放失败，跨源写操作拒绝。`auth revoke` 撤销该用户会话与待兑换链接。网页登录后可显式下载新的 90 天 CLI 凭证，使用 `auth import-file` 在另一台本机恢复同一身份。CLI 先核实固定来源、有效会话与主体一致，再原子写入 0600 文件；不静默覆盖另一个身份。此机制不证明邮件投递已经可用。
 
 私密配送姓名、电话、门牌及自愿联系方式使用 APP_SECRET 派生 AES-GCM 密钥，加密后保存。公开数据明确投影，不输出这些字段。已释放的赞助尝试不再能读取该需求的当前私密配送资料，避免发起方更新后泄露给旧赞助人。公开身份并非实名、机构资质或官方验真。
 

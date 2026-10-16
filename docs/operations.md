@@ -21,7 +21,7 @@ npx wrangler d1 migrations apply mc4need-db --remote
 npx wrangler deploy
 ```
 
-首次自托管创建 D1 并替换 ID；`npx wrangler secret put APP_SECRET` 写入独立随机密钥。应用不需要麦当劳 Token。真实数据迁移前先备份，迁移不要随意重写已应用 SQL。CLI/Skill 更新必须重新打包、核对 SHA256SUMS 并上传相同版本文件；正式稳定发布后应递增版本，避免静默替换。
+首次自托管创建 D1 并替换 ID；`npx wrangler secret put APP_SECRET` 写入独立随机密钥。应用不需要麦当劳 Token。真实数据迁移前先备份，迁移不要随意重写已应用 SQL。CLI/Skill 更新先递增 package.json、CLI、健康接口与安装脚本版本，再打包、核对版本专属 SHA256SUMS 并发布相同文件。已公开的预发布包也不得静默替换；保留旧包与旧校验文件。
 
 当前 `PAYMENT_WINDOW_SECONDS=600`、`QUOTE_LOCK_SECONDS=300` 是可调整实现参数，需结合真实官方订单验证；本地超时不解除已创建/不明订单的占用。
 

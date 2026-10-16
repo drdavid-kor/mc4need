@@ -324,7 +324,7 @@ app.get("/api/health", async (c) => {
   await one(c, "SELECT 1");
   return c.json({
     ok: true,
-    version: "0.1.0",
+    version: "0.1.1",
     email: !!(c.env.RESEND_API_KEY && c.env.MAIL_FROM),
     paymentWindowSeconds: Number(c.env.PAYMENT_WINDOW_SECONDS),
     quoteLockSeconds: Number(c.env.QUOTE_LOCK_SECONDS),
@@ -513,6 +513,19 @@ app.get("/api/me", async (c) =>
     ),
   }),
 );
+app.get("/api/auth/identity", (c) => c.json({ user: c.get("user") }));
+app.post("/api/auth/cli-session", async (c) => {
+  await body(c, z.object({ confirmed: z.literal(true) }).strict());
+  const uid = c.get("user").id;
+  const access = await session(c, uid, "cli");
+  await audit(c, "auth.cli-session", uid);
+  return c.json({
+    userId: uid,
+    token: access,
+    origin: c.env.PUBLIC_ORIGIN,
+    createdAt: now(),
+  });
+});
 app.post("/api/auth/link", async (c) => {
   const t = token();
   await run(

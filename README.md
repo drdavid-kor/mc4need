@@ -65,8 +65,11 @@ npm run preview
 npm run typecheck
 npm test
 npm run test:api       # 需要本地 Worker；仅合成数据，禁止针对生产运行
+npm run test:edges
+npm run test:identity
+npm run test:workflows
 npx playwright install chromium
-npm run test:ui        # 需要先运行 test:api 创建本地凭证夹具
+npm run test:ui        # 先运行上述 API/流程测试创建本地凭证夹具
 ```
 
 ## 实现

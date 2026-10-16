@@ -73,6 +73,11 @@ const statusName: Record<string, string> = {
   late: "超时创建 · 待核实",
   released: "已释放",
 };
+function visibleProgress(n: Need) {
+  if (n.status === "completed") return "已完成 · 发起方已确认收餐与反馈";
+  if (n.receivedAt) return "已收餐 · 等待发起方反馈";
+  return n.progress ? statusName[n.progress.state] : statusName[n.status];
+}
 async function api(path: string, options: RequestInit = {}) {
   const res = await fetch(`/api${path}`, {
     ...options,
@@ -815,14 +820,11 @@ function Detail({ id, link, open }: any) {
             </>
           ) : (
             <>
-              <div className="status-block">
-                {n.progress
-                  ? statusName[n.progress.state]
-                  : statusName[n.status]}
-              </div>
+              <div className="status-block">{visibleProgress(n)}</div>
               {n.progress?.lastSync && (
                 <p className="muted">
-                  赞助人客户端同步 · {date(n.progress.lastSync)}
+                  赞助人客户端同步：{statusName[n.progress.state]} ·{" "}
+                  {date(n.progress.lastSync)}
                   <br />
                   非实时物流或平台独立验真。
                 </p>
@@ -1211,7 +1213,10 @@ function Dashboard({ link, open }: any) {
                   <div>
                     <strong>{JSON.parse(a.data).title}</strong>
                     <p>
-                      {statusName[a.state]} · {a.display_name} ·{" "}
+                      {a.need_status === "completed"
+                        ? "已完成（发起方收餐与反馈）"
+                        : statusName[a.state]}{" "}
+                      · {a.display_name} ·{" "}
                       {a.last_sync
                         ? `客户端同步 ${date(a.last_sync)}`
                         : "暂无订单同步"}
@@ -1263,6 +1268,46 @@ function Dashboard({ link, open }: any) {
                 新的留言和状态变化会出现在这里。未绑定邮箱时，下次访问即可查看。
               </p>
             )}
+          </section>
+          <section className="form-box">
+            <h2>
+              在另一台 AI 中继续 <small>Keep the same identity</small>
+            </h2>
+            <p>
+              下载一份私密平台凭证，在自己的电脑运行{" "}
+              <code>mc4need auth import-file 文件路径</code>
+              ，即可继续管理同一批需求与赞助。邮箱恢复后也可使用这个入口。
+            </p>
+            <p>
+              文件等同账号访问权限，有效期 90
+              天；请勿转发、上传仓库或把内容粘贴进 AI 对话。它不包含麦当劳
+              Token。
+            </p>
+            <button
+              className="button outline"
+              onClick={async () => {
+                try {
+                  const credential = await post("/auth/cli-session", {
+                    confirmed: true,
+                  });
+                  const objectURL = URL.createObjectURL(
+                    new Blob([JSON.stringify(credential)], {
+                      type: "application/json",
+                    }),
+                  );
+                  const a = document.createElement("a");
+                  a.href = objectURL;
+                  a.download = "mc4need-identity.json";
+                  a.click();
+                  setTimeout(() => URL.revokeObjectURL(objectURL), 10000);
+                  setMsg("私密凭证已准备下载。请在本机导入，保管好文件。");
+                } catch (e: any) {
+                  setMsg(e.message);
+                }
+              }}
+            >
+              下载私密凭证文件
+            </button>
           </section>
           <section className="form-box">
             <h2>
@@ -1369,10 +1414,11 @@ function Order({ id, link }: any) {
       <div className="eyebrow">YOUR MEAL, TOGETHER</div>
       <h1>{data.need.title}</h1>
       <div className="status-block">
-        {statusName[data.state]} · {data.isOwner ? "你是发起方" : "你是赞助人"}
+        {visibleProgress({ ...data.need, progress: { state: data.state } })} ·{" "}
+        {data.isOwner ? "你是发起方" : "你是赞助人"}
       </div>
       <p className="muted">
-        状态来源：赞助人客户端同步 ·{" "}
+        上次客户端状态：{statusName[data.state]}。来源：赞助人客户端同步 ·{" "}
         {data.last_sync ? date(data.last_sync) : "尚无同步"}。<br />
         订单不会在 AI 离线时自动查询。
       </p>

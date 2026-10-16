@@ -21,5 +21,7 @@ jobs:
       - run: for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8787/api/health && exit 0; sleep 1; done; exit 1
       - run: npm run test:api
       - run: npm run test:edges
+      - run: npm run test:identity
+      - run: npm run test:workflows
       - run: npx playwright install --with-deps chromium
       - run: npm run test:ui
