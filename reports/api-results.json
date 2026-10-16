@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-16T14:52:40.587Z",
+  "environment": "local Wrangler D1; synthetic orders only",
+  "passed": 17,
+  "checks": [
+    "Guest requester publishes without email or invitation",
+    "Public response excludes private delivery and owner identity",
+    "Cross-user private data and admin access rejected",
+    "Concurrent claims create exactly one active sponsor",
+    "Nonparty order reads and post-claim menu changes rejected",
+    "Creating acknowledgement cannot repeat and cannot release a potential order",
+    "Unknown create response keeps the whole need locked",
+    "Order sync is idempotent and official expiry shortens payment window",
+    "Official delivered report does not complete the platform need",
+    "Order message shared with counterpart but never public",
+    "Only requester receipt plus feedback completes, repeat cannot overwrite",
+    "Next occurrence stays private draft and requires fresh delivery check",
+    "One-use login cannot replay; cookie HttpOnly; cross-origin mutations rejected",
+    "Demo cannot enter real checkout",
+    "Cancellation request retains separate actual state/refund and contact thread",
+    "Unavailable menu pauses need until requester updates",
+    "Released sponsor cannot read current private delivery data"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "$schema":"node_modules/wrangler/config-schema.json",
+  "name":"mc4need",
+  "main":"server/index.ts",
+  "compatibility_date":"2026-10-16",
+  "account_id":"38eba5fd450d4d43f0f921e285ec779a",
+  "workers_dev":true,
+  "preview_urls":false,
+  "assets":{"directory":"./dist","binding":"ASSETS","not_found_handling":"single-page-application","run_worker_first":["/api/*","/needs/*"]},
+  "routes":[{"pattern":"mc4need.david-widgets.com","custom_domain":true}],
+  "d1_databases":[{"binding":"DB","database_name":"mc4need-db","database_id":"ebd4c667-032a-445c-a296-7f17560cede6","migrations_dir":"migrations"}],
+  "vars":{"PUBLIC_ORIGIN":"https://mc4need.david-widgets.com","PAYMENT_WINDOW_SECONDS":"600","QUOTE_LOCK_SECONDS":"300"},
+  "triggers":{"crons":["*/5 * * * *"]}
+}

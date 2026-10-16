@@ -1,0 +1,11 @@
+{
+  "observedAt": "2026-10-16T22:30:06+08:00",
+  "environment": "Developer Codex desktop, existing connected McDonald's MCP",
+  "tool": "mcp__mcd_mcp__list_nutrition_foods",
+  "input": {},
+  "success": true,
+  "code": 200,
+  "returnedFoodCount": 160,
+  "scope": "Read-only connection probe; no account mutation, food order, payment or delivery",
+  "excluded": "Credentials, account identifiers, complete raw response, private delivery data"
+}

@@ -1,0 +1,5 @@
+APP_SECRET=replace-with-a-random-secret-before-running
+PUBLIC_ORIGIN=http://127.0.0.1:8787
+# Optional email provider; never commit a real key.
+# RESEND_API_KEY=your-key
+# MAIL_FROM=Mc4Need <hello@your-verified-domain>

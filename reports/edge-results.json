@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-16T14:48:15.991Z",
+  "environment": "local synthetic D1 fixtures only",
+  "passed": 9,
+  "checks": [
+    "Late official creation remains locked, no second sponsor",
+    "Confirmed unpaid cancellation after cutoff closes occurrence",
+    "Expired local/official deadline without terminal outcome retains lock",
+    "Actual order creation timestamp cannot be rewritten",
+    "Pending after paid is a traceable conflict, not a reset",
+    "Previously paid cancellation cannot reopen even with conflicting unpaid claim",
+    "Concurrent sync only writes observations for successful mutations",
+    "Cancellation request prevents a new create call",
+    "Expired one-use link is rejected"
+  ]
+}

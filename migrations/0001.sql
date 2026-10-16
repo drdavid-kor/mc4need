@@ -1,0 +1,17 @@
+PRAGMA foreign_keys=ON;
+CREATE TABLE users (id TEXT PRIMARY KEY, created_at INTEGER NOT NULL, email TEXT UNIQUE, email_notifications INTEGER NOT NULL DEFAULT 0, admin INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE sessions (hash TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id), expires_at INTEGER NOT NULL, kind TEXT NOT NULL);
+CREATE TABLE login_links (hash TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id), expires_at INTEGER NOT NULL, used INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE email_tokens (hash TEXT PRIMARY KEY, user_id TEXT REFERENCES users(id), email TEXT NOT NULL, purpose TEXT NOT NULL, expires_at INTEGER NOT NULL, used INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE needs (id TEXT PRIMARY KEY, owner_id TEXT NOT NULL REFERENCES users(id), version INTEGER NOT NULL DEFAULT 1, status TEXT NOT NULL DEFAULT 'draft', hidden INTEGER NOT NULL DEFAULT 0, demo INTEGER NOT NULL DEFAULT 0, data TEXT NOT NULL, private_data TEXT NOT NULL, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL, accept_by INTEGER NOT NULL, recurring_days INTEGER, parent_id TEXT REFERENCES needs(id), received_at INTEGER, feedback TEXT, completed_at INTEGER, issue TEXT);
+CREATE INDEX needs_public ON needs(hidden,status,created_at);
+CREATE UNIQUE INDEX next_occurrence ON needs(parent_id) WHERE parent_id IS NOT NULL;
+CREATE TABLE attempts (id TEXT PRIMARY KEY, need_id TEXT NOT NULL REFERENCES needs(id), sponsor_id TEXT NOT NULL REFERENCES users(id), need_version INTEGER NOT NULL, state TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1, revision INTEGER NOT NULL DEFAULT 1, display_name TEXT NOT NULL, contact TEXT, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL, lock_until INTEGER NOT NULL, quote TEXT, order_key TEXT UNIQUE, order_created_at INTEGER, official_expiry INTEGER, pay_by INTEGER, official_state TEXT, last_sync INTEGER, cancel_requested_at INTEGER, cancel_result TEXT, refund_state TEXT NOT NULL DEFAULT 'unknown', issue TEXT);
+CREATE UNIQUE INDEX one_active_sponsor ON attempts(need_id) WHERE active=1;
+CREATE INDEX attempts_user ON attempts(sponsor_id,created_at);
+CREATE TABLE observations (id INTEGER PRIMARY KEY AUTOINCREMENT, attempt_id TEXT NOT NULL REFERENCES attempts(id), key TEXT NOT NULL, data TEXT NOT NULL, created_at INTEGER NOT NULL, UNIQUE(attempt_id,key));
+CREATE TABLE messages (id TEXT PRIMARY KEY, attempt_id TEXT NOT NULL REFERENCES attempts(id), user_id TEXT NOT NULL REFERENCES users(id), body TEXT NOT NULL, created_at INTEGER NOT NULL);
+CREATE TABLE notifications (id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id), need_id TEXT, body TEXT NOT NULL, created_at INTEGER NOT NULL, seen INTEGER NOT NULL DEFAULT 0, email_status TEXT NOT NULL DEFAULT 'not_requested');
+CREATE TABLE reports (id TEXT PRIMARY KEY, need_id TEXT NOT NULL REFERENCES needs(id), reason TEXT NOT NULL, created_at INTEGER NOT NULL, resolved INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE audit (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT, action TEXT NOT NULL, target TEXT NOT NULL, created_at INTEGER NOT NULL);
+CREATE TABLE rate_limits (key TEXT PRIMARY KEY, count INTEGER NOT NULL, expires_at INTEGER NOT NULL);

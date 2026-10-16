@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-16T14:51:04.568Z",
+  "base": "https://mc4need.david-widgets.com",
+  "version": "0.1.0",
+  "emailEnabled": false,
+  "realStats": {
+    "completed": 0,
+    "meals": 0
+  },
+  "passed": 6,
+  "checks": [
+    "HTTPS health and D1 response",
+    "Three labeled demos and public fields allowlist",
+    "Demo sharing title and CSP",
+    "Installer and skill URLs available",
+    "Both public release archives match published SHA-256",
+    "Unauthenticated admin access rejected"
+  ]
+}

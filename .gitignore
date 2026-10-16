@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.wrangler/
+.private/
+.dev.vars
+.env*
+playwright-report/
+test-results/
+reports/private/
+mc4need.tar.gz
+docs/history/
+docs/review-2026-10-16/
+.DS_Store
+reports/ui-results.json

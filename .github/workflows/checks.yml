@@ -1,0 +1,25 @@
+name: Checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: cp .dev.vars.example .dev.vars
+      - run: npm run db:local
+      - run: npm run preview > /tmp/mc4need-worker.log 2>&1 &
+      - run: for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8787/api/health && exit 0; sleep 1; done; exit 1
+      - run: npm run test:api
+      - run: npm run test:edges
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:ui

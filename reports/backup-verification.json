@@ -1,0 +1,9 @@
+{
+  "date": "2026-10-16T14:50:29.422Z",
+  "source": "Production D1 export",
+  "target": "Isolated in-memory SQLite",
+  "needs": 3,
+  "demos": 3,
+  "integrity": "ok",
+  "limitation": "SQL export restores schema and current demo rows. Not a production failover or restore drill of real private orders."
+}
