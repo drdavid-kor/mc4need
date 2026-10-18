@@ -1,11 +1,11 @@
 {
-  "version": "0.1.1",
+  "version": "0.2.0",
   "files": {
-    "mc4need-0.1.1.tar.gz": {
-      "sha256": "4d3561e9efefab4ab005e9831525cfdf6128fb9514bbe9b8882c12602983f5c7"
+    "mc4need-0.2.0.tar.gz": {
+      "sha256": "ce9d23284cbee1ae21852815d8164b5f20cf7fb8b4b032dda4c4a661f7a59655"
     },
-    "mc4need-0.1.1.zip": {
-      "sha256": "a327d1c176dfd4078fd0287e64976e4d9f4798b4e50b3294f7b226f5729ca74c"
+    "mc4need-0.2.0.zip": {
+      "sha256": "677efac85e40b79222c95c4a2325610f589ed162c1bb3dee413e5453b9396e8f"
     }
   }
 }

@@ -16,6 +16,7 @@ for (const name of ["register.mjs", "uninstall.mjs"])
     path.join(folder, "scripts", name),
   );
 fs.copyFileSync("public/install-guide.md", path.join(folder, "INSTALL.md"));
+fs.copyFileSync("public/install-guide.en.md", path.join(folder, "INSTALL.en.md"));
 for (const name of ["LICENSE"])
   if (fs.existsSync(name)) fs.copyFileSync(name, path.join(folder, name));
 fs.writeFileSync(

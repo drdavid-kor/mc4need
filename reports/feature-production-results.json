@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-18T05:47:49.839Z",
+  "version": "0.2.0",
+  "base": "https://mc4need.david-widgets.com",
+  "passed": 7,
+  "checks": [
+    "birthday built-in cover matches reviewed local asset",
+    "training built-in cover matches reviewed local asset",
+    "basketball built-in cover matches reviewed local asset",
+    "other built-in cover matches reviewed local asset",
+    "/install-guide.en.md published",
+    "/skill/references/watching.md published",
+    "Private cover endpoint rejects anonymous access"
+  ]
+}

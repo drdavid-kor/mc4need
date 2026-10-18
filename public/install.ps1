@@ -1,6 +1,6 @@
 param([ValidateSet('codex','claude')][string]$Client='codex')
 $ErrorActionPreference='Stop'
-$Version='0.1.1'
+$Version='0.2.0'
 $Base='https://mc4need.david-widgets.com'
 $Root=Join-Path $env:LOCALAPPDATA 'Mc4Need'
 $Temp=Join-Path ([IO.Path]::GetTempPath()) ('mc4need-'+[guid]::NewGuid())

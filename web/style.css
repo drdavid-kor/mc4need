@@ -2299,3 +2299,21 @@ pre {
     transition: none !important;
   }
 }
+
+/* Covers are static defaults or requester-supplied normalized images. */
+.need-cover { margin:0;position:relative;overflow:hidden;background:#e7dfcf;aspect-ratio:3/2; }
+.need-cover img {display:block;width:100%;height:100%;object-fit:cover;}
+.need-cover.large {aspect-ratio:3/2;border-radius:14px;}
+.need-cover figcaption {position:absolute;bottom:10px;left:10px;max-width:calc(100% - 20px);padding:5px 9px;border-radius:5px;font-size:11px;background:rgba(255,252,242,.94);color:#4b4c3f;}
+.cover-editor {flex-basis:100%;width:100%;padding:12px 0;}
+.cover-editor summary {cursor:pointer;font-weight:600;}
+.cover-editor .need-cover {max-width:360px;margin:14px 0;}
+.cover-editor input[type=file] {max-width:100%;}
+.record:has(.cover-editor) {flex-wrap:wrap;}
+.language-toggle {margin-left:auto;white-space:nowrap;}
+.service-region {font-size:13px!important;line-height:1.5!important;}
+html[lang=en] .nav {gap:18px;}
+html[lang=en] h1,html[lang=en] h2 {word-break:normal;}
+html[lang=en] .record {gap:16px;}
+@media(max-width:760px){.language-toggle{margin-left:0}.nav-wrap{flex-wrap:wrap}.cover-editor .need-cover{max-width:100%}html[lang=en] .hero h1{font-size:44px}.hero-actions{flex-wrap:wrap}}
+html[lang=en] h2 > small,html[lang=en] h3 > small,html[lang=en] .section-heading h2 > span,html[lang=en] .nav .button > span,html[lang=en] .principles small,html[lang=en] .dashboard h1 > span {display:none}

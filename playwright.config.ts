@@ -5,6 +5,7 @@ export default defineConfig({
   use: {
     baseURL: process.env.UI_BASE || "http://127.0.0.1:8787",
     ...devices["Desktop Chrome"],
+    locale: "zh-CN",
   },
   reporter: [["list"], ["json", { outputFile: "reports/ui-results.json" }]],
   projects: [

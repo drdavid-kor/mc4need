@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-18T05:39:33.866Z",
+  "environment": "Local Worker and synthetic need only",
+  "passed": 7,
+  "checks": [
+    "Only the requester may upload a cover",
+    "Consent, static WebP format and byte limit enforced",
+    "Draft cover is private and survives authenticated retrieval",
+    "Published cover is publicly retrievable as a nosniff WebP",
+    "Replacing the cover changes its revision without changing the meal version",
+    "Hiding a need also hides its public cover",
+    "Removing a cover deletes its data and restores the default selection"
+  ]
+}

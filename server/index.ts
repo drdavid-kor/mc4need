@@ -1,3 +1,4 @@
+import { validCover } from "./covers";
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
@@ -170,6 +171,10 @@ async function sponsor(c: any, aid: string) {
 function publicNeed(n: any, a?: any) {
   return {
     id: n.id,
+    coverUrl: n.cover_revision
+      ? `/api/needs/${n.id}/cover?v=${n.cover_revision}`
+      : null,
+    coverRevision: n.cover_revision ?? null,
     version: n.version,
     status: n.status,
     hidden: !!n.hidden,
@@ -266,12 +271,14 @@ async function scheduledMaintenance(env: Env) {
     .all();
   for (const n of rows.results) await makeNext(env, n);
 }
-app.use(
-  "/api/*",
+app.use("/api/*", async (c, next) =>
   bodyLimit({
-    maxSize: 20000,
+    maxSize:
+      c.req.method === "PUT" && /^\/api\/needs\/[^/]+\/cover$/.test(c.req.path)
+        ? 400000
+        : 20000,
     onError: (c) => c.json({ error: "内容过长" }, 413),
-  }),
+  })(c, next),
 );
 app.use("/api/*", async (c, next) => {
   if (!c.env.APP_SECRET || c.env.APP_SECRET.length < 32)
@@ -324,7 +331,7 @@ app.get("/api/health", async (c) => {
   await one(c, "SELECT 1");
   return c.json({
     ok: true,
-    version: "0.1.1",
+    version: "0.2.0",
     email: !!(c.env.RESEND_API_KEY && c.env.MAIL_FROM),
     paymentWindowSeconds: Number(c.env.PAYMENT_WINDOW_SECONDS),
     quoteLockSeconds: Number(c.env.QUOTE_LOCK_SECONDS),
@@ -456,6 +463,18 @@ app.get("/api/needs/:id", async (c) => {
       await one(c, "SELECT * FROM attempts WHERE need_id=? AND active=1", n.id),
     ),
   );
+});
+app.get("/api/needs/:id/cover", async (c) => {
+  const n = await need(c, c.req.param("id"));
+  if (n.hidden || n.status === "draft") fail(404, "该需求暂未公开");
+  const cover = await one(
+    c,
+    "SELECT data FROM need_covers WHERE need_id=?",
+    n.id,
+  );
+  if (!cover) fail(404, "未找到配图");
+  c.header("Content-Type", "image/webp");
+  return c.body(new Uint8Array(cover.data));
 });
 app.post("/api/needs/:id/report", async (c) => {
   const n = await need(c, c.req.param("id"));
@@ -640,6 +659,49 @@ app.get("/api/private/needs/:id", async (c) => {
     ...publicNeed(n),
     privateDelivery: await unseal(n.private_data, c.env.APP_SECRET),
   });
+});
+app.get("/api/private/needs/:id/cover", async (c) => {
+  const n = await owner(c, c.req.param("id"));
+  const cover = await one(
+    c,
+    "SELECT data FROM need_covers WHERE need_id=?",
+    n.id,
+  );
+  if (!cover) fail(404, "未找到配图");
+  c.header("Content-Type", "image/webp");
+  return c.body(new Uint8Array(cover.data));
+});
+app.put("/api/needs/:id/cover", async (c) => {
+  const n = await owner(c, c.req.param("id"));
+  if (n.demo) fail(409, "演示配图由平台管理");
+  if (c.req.header("X-Public-Image-Consent") !== "true")
+    fail(400, "请确认有权公开这张配图");
+  const bytes = new Uint8Array(await c.req.arrayBuffer());
+  if (c.req.header("Content-Type") !== "image/webp" || !validCover(bytes))
+    fail(400, "请使用网页上传有效的静态图片");
+  const rev = id();
+  await c.env.DB.batch([
+    c.env.DB.prepare(
+      "INSERT INTO need_covers(need_id,data,updated_at) VALUES(?,?,?) ON CONFLICT(need_id) DO UPDATE SET data=excluded.data,updated_at=excluded.updated_at",
+    ).bind(n.id, bytes, now()),
+    c.env.DB.prepare(
+      "UPDATE needs SET cover_revision=?,updated_at=? WHERE id=?",
+    ).bind(rev, now(), n.id),
+  ]);
+  await audit(c, "need.cover.upload", n.id);
+  return c.json({ ok: true, coverUrl: `/api/needs/${n.id}/cover?v=${rev}` });
+});
+app.delete("/api/needs/:id/cover", async (c) => {
+  const n = await owner(c, c.req.param("id"));
+  if (n.demo) fail(409, "演示配图由平台管理");
+  await c.env.DB.batch([
+    c.env.DB.prepare("DELETE FROM need_covers WHERE need_id=?").bind(n.id),
+    c.env.DB.prepare(
+      "UPDATE needs SET cover_revision=NULL,updated_at=? WHERE id=?",
+    ).bind(now(), n.id),
+  ]);
+  await audit(c, "need.cover.remove", n.id);
+  return c.json({ ok: true });
 });
 app.put("/api/needs/:id", async (c) => {
   const n = await owner(c, c.req.param("id"));

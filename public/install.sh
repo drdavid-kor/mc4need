@@ -2,7 +2,7 @@
 set -eu
 CLIENT="${1:-codex}"
 case "$CLIENT" in codex|claude) ;; *) printf '%s\n' 'Usage: install.sh codex|claude'; exit 1;; esac
-VERSION=0.1.1
+VERSION=0.2.0
 BASE="${MC4NEED_DOWNLOAD_BASE:-https://mc4need.david-widgets.com}"
 INSTALL_HOME="${MC4NEED_INSTALL_HOME:-$HOME}"
 ROOT="$INSTALL_HOME/.local/share/mc4need"

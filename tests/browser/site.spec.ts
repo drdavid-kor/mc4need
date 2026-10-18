@@ -34,7 +34,7 @@ test("public discovery, demo, prompt and responsive layout", async ({
     "不要索取或上传麦当劳 Token",
   );
   await page
-    .getByRole("button", { name: "复制完整指引 / Copy prompt" })
+    .getByRole("button", { name: /复制完整指引|已复制，粘贴到你的 AI 即可/ })
     .click();
   await expect(
     page.getByRole("button", { name: "已复制，粘贴到你的 AI 即可" }),

@@ -2,7 +2,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-const VERSION = "0.1.1";
+const VERSION = "0.2.0";
 const dir = process.env.MC4NEED_HOME || path.join(os.homedir(), ".mc4need");
 const configFile = path.join(dir, "identity.json");
 const base = process.env.MC4NEED_API || "https://mc4need.david-widgets.com";

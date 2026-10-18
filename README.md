@@ -3,6 +3,8 @@
 **Sponsor a meal. Be part of it.**  
 请一顿饭，参与一个故事。
 
+[English website](https://mc4need.david-widgets.com/?lang=en) · [English installation guide](public/install-guide.en.md)
+
 [打开网站](https://mc4need.david-widgets.com) · [安装 CLI + Skill](https://mc4need.david-widgets.com/install-guide.md) · [实际验证与限制](docs/verification.md)
 
 Mc4Need connects a specific meal need with one sponsor who covers the whole order through their own AI client and McDonald's MCP. The requester confirms receipt and shares feedback. The platform never receives the user's McDonald's Token.
@@ -14,6 +16,14 @@ Mc4Need connects a specific meal need with one sponsor who covers the whole orde
 ![Mc4Need 生产首页，三个案例均为明确标记的模拟演示](docs/images/home-desktop.png)
 
 [观看无声网页演示](docs/media/web-tour.webm)（展示公开页面、复制指引与模拟反馈，无真实付款）
+
+## 本次更新 · v0.2.0
+
+- 发起方可在“我的记录”上传配图；无上传时使用中国大陆场景的预置 AI 插画。
+- 首页支持者入口一键复制定时关注提示词；持久化定时与通知由用户的 AI 客户端提供，复制本身不创建任务。
+- 完整中英文界面、示例故事和 AI 指引；服务范围仍是中国大陆，价格为人民币，时间标注 UTC+8。
+
+[Covers, following and localization details](docs/update-2026-10-18.md)
 
 ## 体验
 
@@ -68,13 +78,14 @@ npm run test:api       # 需要本地 Worker；仅合成数据，禁止针对生
 npm run test:edges
 npm run test:identity
 npm run test:workflows
+npm run test:covers
 npx playwright install chromium
 npm run test:ui        # 先运行上述 API/流程测试创建本地凭证夹具
 ```
 
 ## 实现
 
-- React + TypeScript + Vite，响应式中英双语页面与原创 CSS 场景插画。
+- React + TypeScript + Vite，可切换中英文的响应式页面、预置 AI 场景插画与发起方上传配图。
 - Cloudflare Worker + Hono + D1，持久化需求、独占赞助尝试、留言与反馈。
 - SHA-256 凭证哈希；AES-GCM 加密私密配送字段；HttpOnly 网页会话与一次性登录交换。
 - 数据库唯一索引保证同一期仅一个有效赞助；创建后不因本地超时释放。

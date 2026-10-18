@@ -23,5 +23,6 @@ jobs:
       - run: npm run test:edges
       - run: npm run test:identity
       - run: npm run test:workflows
+      - run: npm run test:covers
       - run: npx playwright install --with-deps chromium
       - run: npm run test:ui
