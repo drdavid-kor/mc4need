@@ -5,17 +5,36 @@
 
 [English website](https://mc4need.david-widgets.com/?lang=en) · [English installation guide](public/install-guide.en.md)
 
+**🌐 Live site / 在线体验：[mc4need.david-widgets.com](https://mc4need.david-widgets.com)**
+
 [打开网站](https://mc4need.david-widgets.com) · [安装 CLI + Skill](https://mc4need.david-widgets.com/install-guide.md) · [实际验证与限制](docs/verification.md)
 
 Mc4Need connects a specific meal need with one sponsor who covers the whole order through their own AI client and McDonald's MCP. The requester confirms receipt and shares feedback. The platform never receives the user's McDonald's Token.
 
 发起方定好餐食、总份数、地点和用餐安排；一位赞助人承担整单，在自己的 AI 中核实金额并确认下单，通过官方入口付款。网页承载发现、地图、订单留言、收餐反馈和致谢。
 
+## English
+
+Mc4Need lets children's homes and charity events post a specific meal request (menu, servings, place, time). A sponsor picks it up and places the whole order **with their own McDonald's account**, in one sentence, through their AI client connected to the official McDonald's China MCP. The requester confirms receipt and shares feedback.
+
+- The platform never handles money and never receives anyone's McDonald's token; payment goes through the official McDonald's flow.
+- Nutrition info is shown upfront; recurring plans (e.g. "5 meals a month") prepare drafts only and are re-confirmed each time.
+- Service area is mainland China (prices in RMB, times in UTC+8). The three cases on the site are clearly labeled simulated demos.
+- Officially entered in the McDonald's China Developer Innovation Challenge ([registration issue #947](https://github.com/M-China/mcd-developer-innovation-challenge/issues/947)). The challenge is ranked by GitHub stars — if you like the idea, a ⭐ is appreciated.
+
 > **当前为首个可用版本，真实点餐链路仍待双方授权验证。** 三个初始案例均明确标记为“演示案例 · 模拟完成”，不代表真实交易、机构合作或已完成的公益成果。接口测试使用合成订单，不调用实际支付。邮件尚未启用；站内通知可用。已正式报名参赛（[报名 Issue #947](https://github.com/M-China/mcd-developer-innovation-challenge/issues/947)），获奖未确认。
 
 ![Mc4Need 生产首页，三个案例均为明确标记的模拟演示](docs/images/home-desktop.png)
 
 [观看无声网页演示](docs/media/web-tour.webm)（展示公开页面、复制指引与模拟反馈，无真实付款）
+
+## Screenshots / 截图
+
+| Home 首页 | Needs list 需求列表 |
+|---|---|
+| ![Home](docs/screenshots/01-home-hero.png) | ![Needs list](docs/screenshots/02-needs-list.png) |
+| **Need detail (simulated demo) 需求详情（模拟演示）** | **How it works 使用流程** |
+| ![Need detail demo](docs/screenshots/03-need-detail-demo-birthday.png) | ![How it works](docs/screenshots/04-how-it-works.png) |
 
 ## 本次更新 · v0.2.0
 
